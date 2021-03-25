@@ -1,6 +1,20 @@
 //network acl default
-resource "aws_default_network_acl" "smp_dev_default" {
-  default_network_acl_id = "${aws_vpc.smp_dev.default_network_acl_id}"
+resource "aws_default_network_acl" "SMP-DEV-NACL-DEFAULT" {
+  default_network_acl_id = "${aws_vpc.smp_dev_vpc.default_network_acl_id}"
+  
+  subnet_ids = [
+    "${aws_subnet.smp_dev_sbn_az1_dmz.id}",
+    "${aws_subnet.smp_dev_sbn_az2_dmz.id}",
+    
+    "${aws_subnet.smp_dev_sbn_az1_app.id}",
+    "${aws_subnet.smp_dev_sbn_az2_app.id}",
+
+    "${aws_subnet.smp_dev_sbn_az1_eks.id}",
+    "${aws_subnet.smp_dev_sbn_az2_eks.id}",
+
+    "${aws_subnet.smp_dev_sbn_az1_db.id}",
+    "${aws_subnet.smp_dev_sbn_az2_db.id}"    
+  ]
 
   ingress {
     protocol   = -1
@@ -26,23 +40,9 @@ resource "aws_default_network_acl" "smp_dev_default" {
 }
 
 
-// network acl for public subnets
-resource "aws_network_acl" "smp_dev_public" {
-  vpc_id = "${aws_vpc.smp_dev.id}"
-  subnet_ids = [
-    "${aws_subnet.smp_dev_public_subnet1.id}",
-    "${aws_subnet.smp_dev_public_subnet2.id}",
-  ]
-
-  tags = {
-    Name = "public"
-  }
-}
-
-
 // default security group
-resource "aws_default_security_group" "smp_dev_default" {
-  vpc_id = "${aws_vpc.smp_dev.id}"
+resource "aws_default_security_group" "smp_dev_sg_deafult" {
+  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
 
   ingress {
     protocol  = -1
@@ -59,16 +59,16 @@ resource "aws_default_security_group" "smp_dev_default" {
   }
 
   tags = {
-    Name = "default"
+    Name = "SMP-DEV-SG-Default"
   }
 }
 
 
 // Basiton Host
-resource "aws_security_group" "smp_dev_bastion" {
+resource "aws_security_group" "smp_dev_sg_bastion" {
   name = "bastion"
   description = "Security group for bastion instance"
-  vpc_id = "${aws_vpc.smp_dev.id}"
+  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
 
   ingress {
     from_port = 22
@@ -85,6 +85,6 @@ resource "aws_security_group" "smp_dev_bastion" {
   }
 
   tags = {
-    Name = "bastion"
+    Name = "SMP-DEV-SG-Bastion"
   }
 }
