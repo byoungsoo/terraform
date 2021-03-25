@@ -59,14 +59,14 @@ resource "aws_default_security_group" "smp_dev_sg_deafult" {
   }
 
   tags = {
-    Name = "SMP-DEV-SG-Default"
+    Name = "SMP-DEV-SG-DEFAULT"
   }
 }
 
 
 // Basiton Host
 resource "aws_security_group" "smp_dev_sg_bastion" {
-  name = "bastion"
+  name = "SMP-DEV-SG-BASTION"
   description = "Security group for bastion instance"
   vpc_id = "${aws_vpc.smp_dev_vpc.id}"
 
@@ -85,6 +85,6 @@ resource "aws_security_group" "smp_dev_sg_bastion" {
   }
 
   tags = {
-    Name = "SMP-DEV-SG-Bastion"
+    Name = "SMP-DEV-SG-BASTION"
   }
 }
