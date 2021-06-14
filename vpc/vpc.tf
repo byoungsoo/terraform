@@ -18,7 +18,7 @@ resource "aws_vpc" "smp_dev_vpc" {
 
 // public subnets
 resource "aws_subnet" "smp_dev_sbn_az1_dmz" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.1.0/24"
   map_public_ip_on_launch = false
   availability_zone = "ap-northeast-2a"
@@ -28,7 +28,7 @@ resource "aws_subnet" "smp_dev_sbn_az1_dmz" {
 }
 
 resource "aws_subnet" "smp_dev_sbn_az2_dmz" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.2.0/24"
   map_public_ip_on_launch = true
   availability_zone = "ap-northeast-2c"
@@ -39,7 +39,7 @@ resource "aws_subnet" "smp_dev_sbn_az2_dmz" {
 
 // private subnets
 resource "aws_subnet" "smp_dev_sbn_az1_app" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id =      
   cidr_block = "10.20.10.0/24"
   availability_zone = "ap-northeast-2a"
   tags = {
@@ -48,7 +48,7 @@ resource "aws_subnet" "smp_dev_sbn_az1_app" {
 }
 
 resource "aws_subnet" "smp_dev_sbn_az2_app" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.11.0/24"
   availability_zone = "ap-northeast-2c"
   tags = {
@@ -58,7 +58,7 @@ resource "aws_subnet" "smp_dev_sbn_az2_app" {
 
 // private subnets
 resource "aws_subnet" "smp_dev_sbn_az1_elb" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.12.0/24"
   availability_zone = "ap-northeast-2a"
   tags = {
@@ -67,7 +67,7 @@ resource "aws_subnet" "smp_dev_sbn_az1_elb" {
 }
 
 resource "aws_subnet" "smp_dev_sbn_az2_elb" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.13.0/24"
   availability_zone = "ap-northeast-2c"
   tags = {
@@ -76,7 +76,7 @@ resource "aws_subnet" "smp_dev_sbn_az2_elb" {
 }
 
 resource "aws_subnet" "smp_dev_sbn_az1_eks" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.14.0/24"
   availability_zone = "ap-northeast-2a"
   tags = {
@@ -85,7 +85,7 @@ resource "aws_subnet" "smp_dev_sbn_az1_eks" {
 }
 
 resource "aws_subnet" "smp_dev_sbn_az2_eks" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.15.0/24"
   availability_zone = "ap-northeast-2c"
   tags = {
@@ -95,7 +95,7 @@ resource "aws_subnet" "smp_dev_sbn_az2_eks" {
 
 
 resource "aws_subnet" "smp_dev_sbn_az1_db" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.16.0/24"
   availability_zone = "ap-northeast-2a"
   tags = {
@@ -104,7 +104,7 @@ resource "aws_subnet" "smp_dev_sbn_az1_db" {
 }
 
 resource "aws_subnet" "smp_dev_sbn_az2_db" {
-  vpc_id = "${aws_vpc.smp_dev_vpc.id}"
+  vpc_id = aws_vpc.smp_dev_vpc.id
   cidr_block = "10.20.17.0/24"
   availability_zone = "ap-northeast-2c"
   tags = {
