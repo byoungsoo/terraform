@@ -2,112 +2,129 @@
 #ProjectCode-Account-Resource-{att1}-{zone}
 
 // vpc
-resource "aws_vpc" "smp_dev_vpc" { 
-  cidr_block  = "10.20.0.0/16" 
+resource "aws_vpc" "bys_vpc" { 
+  cidr_block  = var.cidr_blocks["vpc"]
   instance_tenancy = "default" 
   enable_dns_support                = true 
   enable_dns_hostnames              = true 
-  enable_classiclink                = false 
-  enable_classiclink_dns_support    = false 
   assign_generated_ipv6_cidr_block  = false 
 
   tags = { 
-          "Name"      = "SMP-DEV-VPC" 
+          "Name" = "${var.project_code}-${var.account}-vpc" 
         }
 }
 
 // public subnets
-resource "aws_subnet" "smp_dev_sbn_az1_dmz" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.1.0/24"
-  map_public_ip_on_launch = false
-  availability_zone = "ap-northeast-2a"
-  tags = {
-    Name = "SMP-DEV-SBN-AZ1-DMZ"
-  }
-}
-
-resource "aws_subnet" "smp_dev_sbn_az2_dmz" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.2.0/24"
+resource "aws_subnet" "bys_sbn_az1_dmz" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az1_dmz"]
   map_public_ip_on_launch = true
-  availability_zone = "ap-northeast-2c"
+  availability_zone = var.availability_zone["az1"]
   tags = {
-    Name = "SMP-DEV-SBN-AZ2-DMZ"
+    Name = "${var.project_code}-${var.account}-sbn-az1-dmz"
+  }
+}
+
+resource "aws_subnet" "bys_sbn_az2_dmz" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az2_dmz"]
+  map_public_ip_on_launch = true
+  availability_zone = var.availability_zone["az2"]
+  tags = {
+    Name = "${var.project_code}-${var.account}-sbn-az2-dmz"
+  }
+}
+
+resource "aws_subnet" "bys_sbn_az1_extelb" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az1_extelb"]
+  map_public_ip_on_launch = true
+  availability_zone = var.availability_zone["az1"]
+  tags = {
+    Name = "${var.project_code}-${var.account}-sbn-az1-extelb"
+  }
+}
+
+resource "aws_subnet" "bys_sbn_az2_extelb" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az2_extelb"]
+  map_public_ip_on_launch = true
+  availability_zone = var.availability_zone["az2"]
+  tags = {
+    Name = "${var.project_code}-${var.account}-sbn-az2-extelb"
   }
 }
 
 // private subnets
-resource "aws_subnet" "smp_dev_sbn_az1_app" {
-  vpc_id =      
-  cidr_block = "10.20.10.0/24"
-  availability_zone = "ap-northeast-2a"
+resource "aws_subnet" "bys_sbn_az1_app" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az1_app"]
+  availability_zone = var.availability_zone["az1"]
   tags = {
-    Name = "SMP-DEV-SBN-AZ1-APP"
+    Name = "${var.project_code}-${var.account}-sbn-az1-app"
   }
 }
 
-resource "aws_subnet" "smp_dev_sbn_az2_app" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.11.0/24"
-  availability_zone = "ap-northeast-2c"
+resource "aws_subnet" "bys_sbn_az2_app" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az2_app"]
+  availability_zone = var.availability_zone["az2"]
   tags = {
-    Name = "SMP-DEV-SBN-AZ2-APP"
+    Name = "${var.project_code}-${var.account}-sbn-az2-app"
   }
 }
 
-// private subnets
-resource "aws_subnet" "smp_dev_sbn_az1_elb" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.12.0/24"
-  availability_zone = "ap-northeast-2a"
+resource "aws_subnet" "bys_sbn_az1_con" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az1_con"]
+  availability_zone = var.availability_zone["az1"]
   tags = {
-    Name = "SMP-DEV-SBN-AZ1-ELB"
+    Name = "${var.project_code}-${var.account}-sbn-az1-container"
   }
 }
 
-resource "aws_subnet" "smp_dev_sbn_az2_elb" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.13.0/24"
-  availability_zone = "ap-northeast-2c"
+resource "aws_subnet" "bys_sbn_az2_con" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az2_con"]
+  availability_zone = var.availability_zone["az2"]
   tags = {
-    Name = "SMP-DEV-SBN-AZ2-ELB"
-  }
-}
-
-resource "aws_subnet" "smp_dev_sbn_az1_eks" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.14.0/24"
-  availability_zone = "ap-northeast-2a"
-  tags = {
-    Name = "SMP-DEV-SBN-AZ1-EKS"
-  }
-}
-
-resource "aws_subnet" "smp_dev_sbn_az2_eks" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.15.0/24"
-  availability_zone = "ap-northeast-2c"
-  tags = {
-    Name = "SMP-DEV-SBN-AZ2-EKS"
+    Name = "${var.project_code}-${var.account}-sbn-az2-container"
   }
 }
 
 
-resource "aws_subnet" "smp_dev_sbn_az1_db" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.16.0/24"
-  availability_zone = "ap-northeast-2a"
+resource "aws_subnet" "bys_sbn_az1_intelb" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az1_intelb"]
+  availability_zone = var.availability_zone["az1"]
   tags = {
-    Name = "SMP-DEV-SBN-AZ1-DB"
+    Name = "${var.project_code}-${var.account}-sbn-az1-intelb"
   }
 }
 
-resource "aws_subnet" "smp_dev_sbn_az2_db" {
-  vpc_id = aws_vpc.smp_dev_vpc.id
-  cidr_block = "10.20.17.0/24"
-  availability_zone = "ap-northeast-2c"
+resource "aws_subnet" "bys_sbn_az2_intelb" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az2_intelb"]
+  availability_zone = var.availability_zone["az2"]
   tags = {
-    Name = "SMP-DEV-SBN-AZ2-DB"
+    Name = "${var.project_code}-${var.account}-sbn-az2-intelb"
+  }
+}
+
+resource "aws_subnet" "bys_sbn_az1_db" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az1_db"]
+  availability_zone = var.availability_zone["az1"]
+  tags = {
+    Name = "${var.project_code}-${var.account}-sbn-az1-db"
+  }
+}
+
+resource "aws_subnet" "bys_sbn_az2_db" {
+  vpc_id = aws_vpc.bys_vpc.id
+  cidr_block = var.cidr_blocks["subnet_az2_db"]
+  availability_zone = var.availability_zone["az2"]
+  tags = {
+    Name = "${var.project_code}-${var.account}-sbn-az2-db"
   }
 }
