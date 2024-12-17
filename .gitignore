@@ -15,7 +15,7 @@
 *.lock.hcl
 
 # provider files
-provider.tf
+# provider.tf
 
 
 # Crash log files
