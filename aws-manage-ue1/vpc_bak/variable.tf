@@ -11,14 +11,14 @@ variable "vpc_cidr_blocks" {
 }
 
 variable "pub_subnet_cidr_blocks" {
-  type = list(map)
+  type = list(list(string))
 }
 
 variable "prv_subnet_cidr_blocks" {
-  type = list(map)
+  type = list(list(string))
 }
 
 variable "prv_only_subnet_cidr_blocks" {
-  type = list(map)
+  type = list(list(string))
 }
 
