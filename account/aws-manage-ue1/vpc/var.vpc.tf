@@ -124,6 +124,18 @@ variable "nat_gateway_subnet_name" {
   default     = "sbn-dmz"
 }
 
+variable "karpenter_subnet_name" {
+  description = "Subnets that should be selected by Karpenter"
+  type        = string
+  default     = "app"
+}
+
+variable "karpenter_tag" {
+  description = "Additional tags for the karpenter"
+  type        = map(string)
+  default     = {}
+}
+
 variable "enable_nat_gateway" {
   description = "Should be true if you want to provision NAT Gateways for each of your private networks"
   type        = bool
