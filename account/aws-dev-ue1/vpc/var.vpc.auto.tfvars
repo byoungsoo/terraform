@@ -69,13 +69,18 @@ prvonly_subnet_cidr_blocks = [
     {name="prvonly", cidr_block="10.25.106.0/24", az="us-east-1f"}
 ]
 
+karpenter_subnet_name = "app"
+karpenter_tag = {
+  "subnet" = "karpenter"
+}
+nat_gateway_subnet_name = "dmz"
 ################################################################################
 # Gateway
 ################################################################################
 create_igw = true
 igw_name = "main"
 enable_nat_gateway = true
-nat_gateway_subnet_name = "dmz"
 single_nat_gateway = true
 one_nat_gateway_per_az = true
 nat_gateway_destination_cidr_block = "0.0.0.0/0"
+
