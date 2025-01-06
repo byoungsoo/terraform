@@ -16,10 +16,73 @@ module "eks" {
 
   bootstrap_self_managed_addons = false
   cluster_addons = {
-    coredns = {}
-    kube-proxy = {}
-    vpc-cni = {}
-    eks-pod-identity-agent = {} 
+    vpc-cni = {
+      resolve_conflicts_on_update = "PRESERVE"
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+      addon_version = "v1.19.0-eksbuild.1"
+    }
+    
+    kube-proxy = {
+      addon_version = "v1.31.2-eksbuild.3"
+    }
+    
+    coredns = {
+      addon_version = "v1.11.3-eksbuild.1"
+      resolve_conflicts_on_update = "PRESERVE"
+      configuration_values = jsonencode({
+        "autoScaling": {
+          "enabled": true,
+          "minReplicas": 3,
+          "maxReplicas": 10
+        },
+        "affinity": {
+          "nodeAffinity": {
+            "requiredDuringSchedulingIgnoredDuringExecution": {
+              "nodeSelectorTerms": [
+                {
+                  "matchExpressions": [
+                    {
+                      "key": "eks.amazonaws.com/nodegroup",
+                      "operator": "Exists"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "podAntiAffinity": {
+            "preferredDuringSchedulingIgnoredDuringExecution": [
+              {
+                "podAffinityTerm": {
+                  "labelSelector": {
+                    "matchExpressions": [
+                      {
+                        "key": "k8s-app",
+                        "operator": "In",
+                        "values": [
+                          "kube-dns"
+                        ]
+                      }
+                    ]
+                  },
+                  "topologyKey": "kubernetes.io/hostname"
+                },
+                "weight": 100
+              }
+            ]
+          }
+        }
+      })
+    }
+    eks-pod-identity-agent = {
+      addon_version = "v1.3.4-eksbuild.1"
+    }
+
+    aws-ebs-csi-driver = {
+      addon_version = "v1.38.1-eksbuild.1"
+      resolve_conflicts_on_update = "PRESERVE"
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+    }
   }
 
   # Optional
@@ -27,7 +90,7 @@ module "eks" {
   cluster_endpoint_public_access = true
 
   # Optional: Adds the current caller identity as an administrator via cluster access entry
-  enable_cluster_creator_admin_permissions = true
+  enable_cluster_creator_admin_permissions = false
 
   cluster_tags = {
     Name = "bys-dev-ue1-eks-main"
@@ -35,9 +98,9 @@ module "eks" {
 
   # CloudWatch Log
   cluster_enabled_log_types = [ "audit", "api", "authenticator", "controllerManager", "scheduler"]
-  create_cloudwatch_log_group = true
+  create_cloudwatch_log_group = false
   cloudwatch_log_group_retention_in_days = 545
-  cloudwatch_log_group_class = STANDARD
+  cloudwatch_log_group_class = "STANDARD"
 
 
   # Networking
@@ -52,7 +115,7 @@ module "eks" {
   create_node_iam_role = true
 
   eks_managed_node_groups = {
-    ng-al2023-x86-c5large = {
+    ng_al2023_x86_c5large = {
         # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
         ami_type       = "AL2023_x86_64_STANDARD"
         instance_types = ["c5.xlarge"]
@@ -60,18 +123,36 @@ module "eks" {
         min_size     = 2
         max_size     = 2
         desired_size = 2
-    },
-    ng-al2023-x86-m5large = {
-        # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-        ami_type       = "AL2023_x86_64_STANDARD"
-        instance_types = ["m5.xlarge"]
+    }
+    # ng-al2023-x86-m5large = {
+    #     # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+    #     ami_type       = "AL2023_x86_64_STANDARD"
+    #     instance_types = ["m5.xlarge"]
 
-        min_size     = 2
-        max_size     = 2
-        desired_size = 2
-      }
+    #     min_size     = 2
+    #     max_size     = 2
+    #     desired_size = 2
+    #   }
   }
-
+  node_security_group_additional_rules = {
+    source_self = {
+      description = "Self"
+      protocol    = "all"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    # source_control_plane = {
+    #   security_group_id = module.eks.eks_managed_node_groups.ng_al2023_x86_c5large.node_security_group_id
+    #   description = "Node to source EKS cluster"
+    #   protocol    = "all"
+    #   from_port   = 0
+    #   to_port     = 0
+    #   type        = "ingress"
+    #   source_security_group_id = module.eks.cluster_security_group_id
+    # }
+  }
 
   ################################################################################
   # Access Entry
@@ -80,30 +161,31 @@ module "eks" {
 
   access_entries = {
     # One access entry with a policy associated
-    ng-al2023-x86-c5large = {
-      principal_arn = module.eks.eks_managed_node_groups.ng-al2023-x86-c5large.iam_role_arn
-      type = "EC2_LINUX"
-    },
-    ng-al2023-x86-m5large = {
-      principal_arn = module.eks.eks_managed_node_groups.ng-al2023-x86-m5large.iam_role_arn
-      type = "EC2_LINUX"
-    },
+    # ng_al2023_x86_c5large = {
+    #   principal_arn = module.eks.eks_managed_node_groups.ng_al2023_x86_c5large.iam_role_arn
+    #   type = "EC2_LINUX"
+    # },
+    # ng_al2023_x86_m5large = {
+    #   principal_arn = module.eks.eks_managed_node_groups.ng_al2023_x86_m5large.iam_role_arn
+    #   type = "EC2_LINUX"
+    # },
     admin_role = {
       principal_arn = "arn:aws:iam::558846430793:role/AdminDevAccountRole"
       type = "STANDARD"
       policy_associations = {
-        admin_role = {
+        cluster_role1 = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
           access_scope = {
             type = "cluster"
           }
         }
-      },
+      }
+    }
     admin_user = {
       principal_arn = "arn:aws:iam::558846430793:user/byoungsoo"
       type = "STANDARD"
       policy_associations = {
-        admin_role = {
+        cluster_role2 = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
           access_scope = {
             type = "cluster"
@@ -116,5 +198,80 @@ module "eks" {
   tags = {
     auto-delete = "no"
     Terraform   = "true"
+  }
+  
+}
+
+
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+
+  role_name             = "AmazonEKS_VPC_CNI_Role_${module.eks.cluster_name}"
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
+  }
+
+  tags = {
+    auto-delete = "no"
+    Terraform   = "true"
+  }
+}
+
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+
+  role_name             = "AmazonEKS_EBS_CSI_DriverRole_${module.eks.cluster_name}"
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = {
+    auto-delete = "no"
+    Terraform   = "true"
+  }
+}
+
+
+# resource "aws_autoscaling_group_tag" "auto_delete" {
+#   for_each = toset([for asg_name in module.eks.eks_managed_node_groups_autoscaling_group_names : asg_name])
+#   autoscaling_group_name = each.value
+
+#   tag {
+#     key   = "auto-delete"
+#     value = "no"
+#     propagate_at_launch = true
+#   }
+# }
+
+resource "aws_autoscaling_group_tag" "auto_delete" {
+  for_each = {for mng, info in module.eks.eks_managed_node_groups : mng => info}
+  autoscaling_group_name = each.value.node_group_autoscaling_group_names[0]
+
+  tag {
+    key   = "auto-start"
+    value = "yes"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_autoscaling_group_tag" "asg_name" {
+  for_each = {for mng, info in module.eks.eks_managed_node_groups : mng => info}
+  autoscaling_group_name = each.value.node_group_autoscaling_group_names[0]
+
+  tag {
+    key   = "Name"
+    value = "${module.eks.cluster_name}-${replace(module.eks.eks_managed_node_groups[each.key].launch_template_name, "_", "-")}"
+    propagate_at_launch = true
   }
 }
