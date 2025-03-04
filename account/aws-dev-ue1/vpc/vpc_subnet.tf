@@ -23,8 +23,14 @@ module "vpc" {
   prvonly_subnet_cidr_blocks = var.prvonly_subnet_cidr_blocks
 
   karpenter_subnet_name = var.karpenter_subnet_name
-  nat_gateway_subnet_name = var.nat_gateway_subnet_name
   karpenter_tag = var.karpenter_tag
+
+  intelb_subnet_name = var.intelb_subnet_name
+  intelb_tag = var.intelb_tag
+
+  nat_gateway_subnet_name = var.nat_gateway_subnet_name
+  
+
   ################################################################################
   # Gateway
   ################################################################################

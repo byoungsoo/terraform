@@ -120,9 +120,18 @@ module "eks" {
         ami_type       = "AL2023_x86_64_STANDARD"
         instance_types = ["c5.xlarge"]
 
-        min_size     = 2
-        max_size     = 2
-        desired_size = 2
+        min_size     = 0
+        max_size     = 1
+        desired_size = 1
+
+        taints = {
+          dedicated = {
+            key    = "test"
+            value  = "test"
+            effect = "NO_SCHEDULE"
+          }
+        }
+
     }
     # ng-al2023-x86-m5large = {
     #     # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups

@@ -73,6 +73,10 @@ karpenter_subnet_name = "app"
 karpenter_tag = {
   "subnet" = "karpenter"
 }
+intelb_subnet_name = "intelb"
+intelb_tag = {
+  "kubernetes.io/role/internal-elb" = "1"
+}
 nat_gateway_subnet_name = "dmz"
 ################################################################################
 # Gateway
@@ -83,4 +87,3 @@ enable_nat_gateway = true
 single_nat_gateway = true
 one_nat_gateway_per_az = true
 nat_gateway_destination_cidr_block = "0.0.0.0/0"
-
