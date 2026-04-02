@@ -1,0 +1,32 @@
+# =============================================================================
+# dev-ap3 / vpc
+# =============================================================================
+dev-ap3-vpc:plan:
+  extends: .terraform_base
+  stage: plan
+  variables:
+    TF_ROOT: account/aws-dev-ap3/vpc
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan
+    expire_in: 1 hour
+  rules:
+    - changes:
+        - account/aws-dev-ap3/vpc/**/*
+
+dev-ap3-vpc:apply:
+  extends: .terraform_base
+  stage: apply
+  resource_group: dev-ap3-vpc
+  variables:
+    TF_ROOT: account/aws-dev-ap3/vpc
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - dev-ap3-vpc:plan
+  rules:
+    - changes:
+        - account/aws-dev-ap3/vpc/**/*
+      when: manual

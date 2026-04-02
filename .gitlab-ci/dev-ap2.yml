@@ -1,0 +1,82 @@
+# =============================================================================
+# dev-ap2 / eks-main
+# =============================================================================
+# GitLab CI Variables 필요:
+#   TF_VAR_vpc_id, TF_VAR_private_app3_subnet_ids,
+#   TF_VAR_eks_cluster_iam_role_arn, TF_VAR_ng_al2023_x86_c5large_iam_role_arn,
+#   TF_VAR_karpenter_node_role_arn, TF_VAR_ebs_csi_driver_role_arn,
+#   TF_VAR_aws_lbc_role_arn, TF_VAR_access_entry_admin_role, TF_VAR_access_entry_admin_user
+
+dev-ap2-eks-main:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-dev-ap2/eks-main
+  script:
+    - terraform validate
+  rules:
+    - changes:
+        - account/aws-dev-ap2/eks-main/**/*
+
+dev-ap2-eks-main:plan:
+  extends: .terraform_base
+  stage: plan
+  variables:
+    TF_ROOT: account/aws-dev-ap2/eks-main
+  script:
+    - terraform plan -var-file=environments/dev.tfvars -out=tfplan
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan
+    expire_in: 1 hour
+  rules:
+    - changes:
+        - account/aws-dev-ap2/eks-main/**/*
+
+dev-ap2-eks-main:apply:
+  extends: .terraform_base
+  stage: apply
+  resource_group: dev-ap2-eks-main
+  variables:
+    TF_ROOT: account/aws-dev-ap2/eks-main
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - dev-ap2-eks-main:plan
+  rules:
+    - changes:
+        - account/aws-dev-ap2/eks-main/**/*
+      when: manual
+
+# =============================================================================
+# dev-ap2 / tgw
+# =============================================================================
+dev-ap2-tgw:plan:
+  extends: .terraform_base
+  stage: plan
+  variables:
+    TF_ROOT: account/aws-dev-ap2/tgw
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan
+    expire_in: 1 hour
+  rules:
+    - changes:
+        - account/aws-dev-ap2/tgw/**/*
+
+dev-ap2-tgw:apply:
+  extends: .terraform_base
+  stage: apply
+  resource_group: dev-ap2-tgw
+  variables:
+    TF_ROOT: account/aws-dev-ap2/tgw
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - dev-ap2-tgw:plan
+  rules:
+    - changes:
+        - account/aws-dev-ap2/tgw/**/*
+      when: manual

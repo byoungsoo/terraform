@@ -1,4 +1,12 @@
 terraform {
+
+  backend "s3" {
+    bucket  = "bys-shared-ap2-s3-terraform"
+    key     = "aws-manage-ap3/vpc/terraform.tfstate"
+    region  = "ap-northeast-2"
+    encrypt = true
+    profile = "shared-admin"
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"

@@ -1,0 +1,30 @@
+include:
+  - local: .gitlab-ci/dev-ap2.yml
+  - local: .gitlab-ci/dev-ap3.yml
+  - local: .gitlab-ci/dev-ue1.yml
+  - local: .gitlab-ci/manage-ap2.yml
+  - local: .gitlab-ci/manage-ap3.yml
+  - local: .gitlab-ci/manage-ue1.yml
+
+stages:
+  - validate
+  - plan
+  - apply
+
+variables:
+  TF_VERSION: "1.14.5"
+
+# GitLab CI Variables (Settings > CI/CD > Variables)에 등록 필요:
+#
+# [AWS Credentials per account] - Masked & Protected
+#   DEV_AWS_ACCESS_KEY_ID / DEV_AWS_SECRET_ACCESS_KEY
+#   MANAGE_AWS_ACCESS_KEY_ID / MANAGE_AWS_SECRET_ACCESS_KEY
+#   SHARED_AWS_ACCESS_KEY_ID / SHARED_AWS_SECRET_ACCESS_KEY
+
+.terraform_base:
+  image:
+    name: hashicorp/terraform:${TF_VERSION}
+    entrypoint: [""]
+  before_script:
+    - cd ${TF_ROOT}
+    - terraform init -input=false

@@ -1,0 +1,65 @@
+# =============================================================================
+# manage-ap2 / tgw
+# =============================================================================
+manage-ap2-tgw:plan:
+  extends: .terraform_base
+  stage: plan
+  variables:
+    TF_ROOT: account/aws-manage-ap2/tgw
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan
+    expire_in: 1 hour
+  rules:
+    - changes:
+        - account/aws-manage-ap2/tgw/**/*
+
+manage-ap2-tgw:apply:
+  extends: .terraform_base
+  stage: apply
+  resource_group: manage-ap2-tgw
+  variables:
+    TF_ROOT: account/aws-manage-ap2/tgw
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - manage-ap2-tgw:plan
+  rules:
+    - changes:
+        - account/aws-manage-ap2/tgw/**/*
+      when: manual
+
+# =============================================================================
+# manage-ap2 / vpc
+# =============================================================================
+manage-ap2-vpc:plan:
+  extends: .terraform_base
+  stage: plan
+  variables:
+    TF_ROOT: account/aws-manage-ap2/vpc
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan
+    expire_in: 1 hour
+  rules:
+    - changes:
+        - account/aws-manage-ap2/vpc/**/*
+
+manage-ap2-vpc:apply:
+  extends: .terraform_base
+  stage: apply
+  resource_group: manage-ap2-vpc
+  variables:
+    TF_ROOT: account/aws-manage-ap2/vpc
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - manage-ap2-vpc:plan
+  rules:
+    - changes:
+        - account/aws-manage-ap2/vpc/**/*
+      when: manual
