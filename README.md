@@ -93,4 +93,4 @@ Legend:
 
 
 
-![tgw_architecture](tgw_architecture.gif)
+![tgw_architecture](images/tgw_architecture.gif)
