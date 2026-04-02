@@ -61,24 +61,24 @@ vpc_cidr_blocks = {
 ## 전체 아키텍처 다이어그램
 `Simple`  
 ```
- [manage-ue1 VPC]                                     [manage-ap2 VPC]                                          [manage-ap3 VPC]                                
-  10.5.0.0/16                                          10.0.0.0/16                                                10.3.0.0/16                            
-       │                                                     │                                                         │
-       │                                                     │                                                         │
-       │                                                     │                                                         │
-       ▼                                                     ▼                                                         ▼
-                                                            
-  [TGW ue1]        ◄══════════════════════════════►       [TGW ap2]        ◄══════════════════════════════►        [TGW ap3]
-(manage account)              Peering                  (manage account)                Peering                  (manage account)
+ [manage-ue1 VPC]                                     [manage-ap2 VPC]                                          [manage-ap3 VPC]  
+  10.5.0.0/16                                          10.0.0.0/16                                                10.3.0.0/16     
+       │                                                     │                                                         │          
+       │                                                     │                                                         │          
+       │                                                     │                                                         │          
+       ▼                                                     ▼                                                         ▼          
+                                                                                                                                  
+  [TGW ue1]        ◄══════════════════════════════►       [TGW ap2]        ◄══════════════════════════════►        [TGW ap3]      
+(manage account)              Peering                  (manage account)                Peering                  (manage account)  
+                                                                                                                                  
+       ▲                                                ▲          ▲                                                   ▲          
+       │                                     ┌──────────┘          └──────────┐                                        │          
+       │                                     │                                │                                        │          
+       │                                     |                                │                                        │          
+ [dev-ue1 VPC]                         [dev-ap2 VPC]                    [shared-ap2 VPC]                          [dev-ap3 VPC]   
+  10.25.0.0/16                          10.20.0.0/16                      10.10.0.0/16                             10.30.0.0/16   
 
-       ▲                                                ▲    ▲     ▲                                                   ▲                                           
-       │                                     ┌──────────┘    │     └──────────┐                                        │                                              
-       │                                     │               │                │                                        │                                               
-       │                                     |               │                │                                        │                        
- [dev-ue1 VPC]                         [dev-ap2 VPC]         │          [shared-ap2 VPC]                          [dev-ap3 VPC]                          
-  10.25.0.0/16                          10.20.0.0/16         │            10.10.0.0/16                             10.30.0.0/16                      
-                                                       [manage-ap2 VPC]
-                                                         10.0.0.0/16  
+
 
 Routing Path:
   ap3 ↔ ap2 : Direct Peering

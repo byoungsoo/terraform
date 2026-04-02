@@ -69,3 +69,7 @@ override.tf.json
 
 .kiro/*
 .DS_Store
+
+# Terraform Secret Files
+# **/secrets/*.secret.tfvars
+# !**/secrets/example.secret.tfvars**/secrets/*.secret.tfvars

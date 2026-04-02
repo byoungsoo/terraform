@@ -44,8 +44,5 @@ output "access_entries" {
   value       = module.eks.access_entries
 }
 
-output "cluster_addons" {
-  description = "Map of access entries created and their attributes"
-  value       = module.eks.cluster_addons
-}
+
 

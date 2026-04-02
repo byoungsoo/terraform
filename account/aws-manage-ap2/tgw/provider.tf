@@ -9,26 +9,25 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "us-east-1"
+  region = "ap-northeast-2"
   profile = "managed-admin"
 }
 
 # Resource Naming Rule
 provider "aws" {
-  alias  = "dev-ue1"
-  region = "us-east-1"
-  profile = "dev-admin"
-}
-
-provider "aws" {
   alias  = "dev-ap2"
   region = "ap-northeast-2"
   profile = "dev-admin"
-  
 }
 
 provider "aws" {
   alias  = "shared-ap2"
   region = "ap-northeast-2"
   profile = "shared-admin"
+}
+
+provider "aws" {
+  alias  = "manage-ue1"
+  region = "us-east-1"
+  profile = "managed-admin"
 }

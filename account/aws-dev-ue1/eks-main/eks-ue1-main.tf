@@ -12,78 +12,9 @@ module "eks" {
   version = "~> 20.31"
 
   cluster_name    = "bys-dev-ue1-eks-main"
-  cluster_version = "1.31"
+  cluster_version = "1.32"
 
   bootstrap_self_managed_addons = false
-  cluster_addons = {
-    vpc-cni = {
-      resolve_conflicts_on_update = "PRESERVE"
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-      addon_version = "v1.19.0-eksbuild.1"
-    }
-    
-    kube-proxy = {
-      addon_version = "v1.31.2-eksbuild.3"
-    }
-    
-    coredns = {
-      addon_version = "v1.11.3-eksbuild.1"
-      resolve_conflicts_on_update = "PRESERVE"
-      configuration_values = jsonencode({
-        "autoScaling": {
-          "enabled": true,
-          "minReplicas": 3,
-          "maxReplicas": 10
-        },
-        "affinity": {
-          "nodeAffinity": {
-            "requiredDuringSchedulingIgnoredDuringExecution": {
-              "nodeSelectorTerms": [
-                {
-                  "matchExpressions": [
-                    {
-                      "key": "eks.amazonaws.com/nodegroup",
-                      "operator": "Exists"
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          "podAntiAffinity": {
-            "preferredDuringSchedulingIgnoredDuringExecution": [
-              {
-                "podAffinityTerm": {
-                  "labelSelector": {
-                    "matchExpressions": [
-                      {
-                        "key": "k8s-app",
-                        "operator": "In",
-                        "values": [
-                          "kube-dns"
-                        ]
-                      }
-                    ]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                },
-                "weight": 100
-              }
-            ]
-          }
-        }
-      })
-    }
-    eks-pod-identity-agent = {
-      addon_version = "v1.3.4-eksbuild.1"
-    }
-
-    aws-ebs-csi-driver = {
-      addon_version = "v1.38.1-eksbuild.1"
-      resolve_conflicts_on_update = "PRESERVE"
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-    }
-  }
 
   # Optional
   cluster_endpoint_private_access = true
@@ -122,17 +53,17 @@ module "eks" {
 
         min_size     = 0
         max_size     = 1
-        desired_size = 1
+        desired_size = 0
 
-        taints = {
-          dedicated = {
-            key    = "test"
-            value  = "test"
-            effect = "NO_SCHEDULE"
-          }
-        }
-
+        # taints = {
+        #   dedicated = {
+        #     key    = "test"
+        #     value  = "test"
+        #     effect = "NO_SCHEDULE"
+        #   }
+        # }
     }
+
     # ng-al2023-x86-m5large = {
     #     # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
     #     ami_type       = "AL2023_x86_64_STANDARD"
@@ -178,6 +109,10 @@ module "eks" {
     #   principal_arn = module.eks.eks_managed_node_groups.ng_al2023_x86_m5large.iam_role_arn
     #   type = "EC2_LINUX"
     # },
+    karpenter_node_role = {
+      principal_arn = "arn:aws:iam::558846430793:role/KarpenterNodeRole-bys-dev-ue1-eks-mlops"
+      type = "EC2_LINUX"
+    }
     admin_role = {
       principal_arn = "arn:aws:iam::558846430793:role/AdminDevAccountRole"
       type = "STANDARD"
