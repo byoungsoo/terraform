@@ -13,8 +13,11 @@ dev-ue1-eks-main:plan:
       - ${TF_ROOT}/tfplan
     expire_in: 1 hour
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ue1/eks-main/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 dev-ue1-eks-main:apply:
   extends: .terraform_base
@@ -27,6 +30,9 @@ dev-ue1-eks-main:apply:
   dependencies:
     - dev-ue1-eks-main:plan
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ue1/eks-main/**/*
+      when: manual
+    - if: $CI_PIPELINE_SOURCE != "push"
       when: manual

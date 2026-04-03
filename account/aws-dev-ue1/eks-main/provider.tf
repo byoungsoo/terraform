@@ -5,9 +5,7 @@ terraform {
     key     = "aws-dev-ue1/eks-main/terraform.tfstate"
     region  = "ap-northeast-2"
     encrypt = true
-    profile = "shared-admin"
   }
-  
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -21,6 +19,10 @@ terraform {
 }
 
 provider "aws" {
-  region  = "us-east-1"
-  profile = "dev-admin"
+  region = "us-east-1"
+  # profile = "dev-admin"
+
+  assume_role {
+    role_arn = "arn:aws:iam::558846430793:role/DevTerraformRole"
+  }
 }

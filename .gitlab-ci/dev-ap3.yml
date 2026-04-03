@@ -13,8 +13,11 @@ dev-ap3-vpc:plan:
       - ${TF_ROOT}/tfplan
     expire_in: 1 hour
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ap3/vpc/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 dev-ap3-vpc:apply:
   extends: .terraform_base
@@ -27,6 +30,9 @@ dev-ap3-vpc:apply:
   dependencies:
     - dev-ap3-vpc:plan
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ap3/vpc/**/*
+      when: manual
+    - if: $CI_PIPELINE_SOURCE != "push"
       when: manual

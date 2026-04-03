@@ -5,7 +5,6 @@ terraform {
     key     = "aws-manage-ue1/vpc/terraform.tfstate"
     region  = "ap-northeast-2"
     encrypt = true
-    profile = "shared-admin"
   }
   required_providers {
     aws = {
@@ -18,8 +17,9 @@ terraform {
 # Configure the AWS Provider
 provider "aws" {
   region = "us-east-1"
-  profile = "managed-admin"
-}
+  # profile = "managed-admin"
 
-# Resource Naming Rule
-#${var.project_code}-${var.account}-${var.aws_region_code}-resource-{az}-{name}
+  assume_role {
+    role_arn = "arn:aws:iam::692806374063:role/ManageTerraformRole"
+  }
+}

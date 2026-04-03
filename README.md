@@ -5,6 +5,10 @@
 
 
 ## Terraform 배포
+
+### Resource Naming Rule
+#${var.project_code}-${var.account}-${var.aws_region_code}-resource-{az}-{name}
+
 ```
 shared 계정 (202949997891) - GitLab Runner 위치
   └── GitlabTerraformRole (Runner EC2 Instance Profile)

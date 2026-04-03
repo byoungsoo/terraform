@@ -5,7 +5,6 @@ terraform {
     key     = "aws-manage-ap3/tgw/terraform.tfstate"
     region  = "ap-northeast-2"
     encrypt = true
-    profile = "shared-admin"
   }
   required_providers {
     aws = {
@@ -17,12 +16,20 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region  = "ap-northeast-3"
-  profile = "managed-admin"
+  region = "ap-northeast-3"
+  # profile = "managed-admin"
+
+  assume_role {
+    role_arn = "arn:aws:iam::692806374063:role/ManageTerraformRole"
+  }
 }
 
 provider "aws" {
-  alias   = "dev-ap3"
-  region  = "ap-northeast-3"
-  profile = "dev-admin"
+  alias  = "dev-ap3"
+  region = "ap-northeast-3"
+  # profile = "dev-admin"
+
+  assume_role {
+    role_arn = "arn:aws:iam::558846430793:role/DevTerraformRole"
+  }
 }

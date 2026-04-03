@@ -5,7 +5,6 @@ terraform {
     key     = "aws-dev-ap2/vpc-endpoint/terraform.tfstate"
     region  = "ap-northeast-2"
     encrypt = true
-    profile = "shared-admin"
   }
   required_providers {
     aws = {
@@ -18,8 +17,9 @@ terraform {
 # Configure the AWS Provider
 provider "aws" {
   region = "ap-northeast-2"
-  profile = "dev-admin"
-}
+  # profile = "dev-admin"
 
-# Resource Naming Rule
-#${var.project_code}-${var.account}-${var.aws_region_code}-resource-{az}-{name}
+  assume_role {
+    role_arn = "arn:aws:iam::558846430793:role/DevTerraformRole"
+  }
+}

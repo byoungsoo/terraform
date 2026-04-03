@@ -13,8 +13,11 @@ manage-ue1-tgw:plan:
       - ${TF_ROOT}/tfplan
     expire_in: 1 hour
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-manage-ue1/tgw/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 manage-ue1-tgw:apply:
   extends: .terraform_base
@@ -27,8 +30,11 @@ manage-ue1-tgw:apply:
   dependencies:
     - manage-ue1-tgw:plan
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-manage-ue1/tgw/**/*
+      when: manual
+    - if: $CI_PIPELINE_SOURCE != "push"
       when: manual
 
 # =============================================================================
@@ -46,8 +52,11 @@ manage-ue1-vpc:plan:
       - ${TF_ROOT}/tfplan
     expire_in: 1 hour
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-manage-ue1/vpc/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 manage-ue1-vpc:apply:
   extends: .terraform_base
@@ -60,6 +69,9 @@ manage-ue1-vpc:apply:
   dependencies:
     - manage-ue1-vpc:plan
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-manage-ue1/vpc/**/*
+      when: manual
+    - if: $CI_PIPELINE_SOURCE != "push"
       when: manual

@@ -13,8 +13,11 @@ manage-ap3-tgw:plan:
       - ${TF_ROOT}/tfplan
     expire_in: 1 hour
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-manage-ap3/tgw/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 manage-ap3-tgw:apply:
   extends: .terraform_base
@@ -27,8 +30,11 @@ manage-ap3-tgw:apply:
   dependencies:
     - manage-ap3-tgw:plan
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-manage-ap3/tgw/**/*
+      when: manual
+    - if: $CI_PIPELINE_SOURCE != "push"
       when: manual
 
 # =============================================================================
@@ -46,8 +52,11 @@ manage-ap3-vpc:plan:
       - ${TF_ROOT}/tfplan
     expire_in: 1 hour
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-manage-ap3/vpc/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 manage-ap3-vpc:apply:
   extends: .terraform_base
@@ -60,6 +69,9 @@ manage-ap3-vpc:apply:
   dependencies:
     - manage-ap3-vpc:plan
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-manage-ap3/vpc/**/*
+      when: manual
+    - if: $CI_PIPELINE_SOURCE != "push"
       when: manual

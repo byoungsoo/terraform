@@ -9,8 +9,11 @@ dev-ap2-eks-tf:validate:
   script:
     - terraform validate
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ap2/eks-tf/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 dev-ap2-eks-tf:plan:
   extends: .terraform_base
@@ -24,8 +27,11 @@ dev-ap2-eks-tf:plan:
       - ${TF_ROOT}/tfplan
     expire_in: 1 hour
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ap2/eks-tf/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 dev-ap2-eks-tf:apply:
   extends: .terraform_base
@@ -38,8 +44,11 @@ dev-ap2-eks-tf:apply:
   dependencies:
     - dev-ap2-eks-tf:plan
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ap2/eks-tf/**/*
+      when: manual
+    - if: $CI_PIPELINE_SOURCE != "push"
       when: manual
 
 # =============================================================================
@@ -57,8 +66,11 @@ dev-ap2-tgw:plan:
       - ${TF_ROOT}/tfplan
     expire_in: 1 hour
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ap2/tgw/**/*
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: manual
 
 dev-ap2-tgw:apply:
   extends: .terraform_base
@@ -71,6 +83,9 @@ dev-ap2-tgw:apply:
   dependencies:
     - dev-ap2-tgw:plan
   rules:
-    - changes:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
         - account/aws-dev-ap2/tgw/**/*
+      when: manual
+    - if: $CI_PIPELINE_SOURCE != "push"
       when: manual
