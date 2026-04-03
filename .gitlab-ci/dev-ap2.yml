@@ -1,28 +1,22 @@
 # =============================================================================
-# dev-ap2 / eks-main
+# dev-ap2 / eks-tf
 # =============================================================================
-# GitLab CI Variables 필요:
-#   TF_VAR_vpc_id, TF_VAR_private_app3_subnet_ids,
-#   TF_VAR_eks_cluster_iam_role_arn, TF_VAR_ng_al2023_x86_c5large_iam_role_arn,
-#   TF_VAR_karpenter_node_role_arn, TF_VAR_ebs_csi_driver_role_arn,
-#   TF_VAR_aws_lbc_role_arn, TF_VAR_access_entry_admin_role, TF_VAR_access_entry_admin_user
-
-dev-ap2-eks-main:validate:
+dev-ap2-eks-tf:validate:
   extends: .terraform_base
   stage: validate
   variables:
-    TF_ROOT: account/aws-dev-ap2/eks-main
+    TF_ROOT: account/aws-dev-ap2/eks-tf
   script:
     - terraform validate
   rules:
     - changes:
-        - account/aws-dev-ap2/eks-main/**/*
+        - account/aws-dev-ap2/eks-tf/**/*
 
-dev-ap2-eks-main:plan:
+dev-ap2-eks-tf:plan:
   extends: .terraform_base
   stage: plan
   variables:
-    TF_ROOT: account/aws-dev-ap2/eks-main
+    TF_ROOT: account/aws-dev-ap2/eks-tf
   script:
     - terraform plan -var-file=environments/dev.tfvars -out=tfplan
   artifacts:
@@ -31,21 +25,21 @@ dev-ap2-eks-main:plan:
     expire_in: 1 hour
   rules:
     - changes:
-        - account/aws-dev-ap2/eks-main/**/*
+        - account/aws-dev-ap2/eks-tf/**/*
 
-dev-ap2-eks-main:apply:
+dev-ap2-eks-tf:apply:
   extends: .terraform_base
   stage: apply
-  resource_group: dev-ap2-eks-main
+  resource_group: dev-ap2-eks-tf
   variables:
-    TF_ROOT: account/aws-dev-ap2/eks-main
+    TF_ROOT: account/aws-dev-ap2/eks-tf
   script:
     - terraform apply -auto-approve tfplan
   dependencies:
-    - dev-ap2-eks-main:plan
+    - dev-ap2-eks-tf:plan
   rules:
     - changes:
-        - account/aws-dev-ap2/eks-main/**/*
+        - account/aws-dev-ap2/eks-tf/**/*
       when: manual
 
 # =============================================================================

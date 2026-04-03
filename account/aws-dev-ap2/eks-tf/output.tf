@@ -58,30 +58,10 @@ output "node_group_status" {
 output "eks_addons" {
   description = "Map of EKS addons and their status"
   value = {
-    vpc_cni = {
-      arn     = aws_eks_addon.vpc_cni.arn
-      status  = aws_eks_addon.vpc_cni.status
-      version = aws_eks_addon.vpc_cni.addon_version
-    }
-    kube_proxy = {
-      arn     = aws_eks_addon.kube_proxy.arn
-      status  = aws_eks_addon.kube_proxy.status
-      version = aws_eks_addon.kube_proxy.addon_version
-    }
-    coredns = {
-      arn     = aws_eks_addon.coredns.arn
-      status  = aws_eks_addon.coredns.status
-      version = aws_eks_addon.coredns.addon_version
-    }
-    pod_identity_agent = {
-      arn     = aws_eks_addon.pod_identity_agent.arn
-      status  = aws_eks_addon.pod_identity_agent.status
-      version = aws_eks_addon.pod_identity_agent.addon_version
-    }
-    ebs_csi_driver = {
-      arn     = aws_eks_addon.ebs_csi_driver.arn
-      status  = aws_eks_addon.ebs_csi_driver.status
-      version = aws_eks_addon.ebs_csi_driver.addon_version
+    for k, v in aws_eks_addon.this : k => {
+      arn     = v.arn
+      status  = v.status
+      version = v.addon_version
     }
   }
 }

@@ -1,21 +1,30 @@
 ################################################################################
+# Data Sources
+################################################################################
+data "aws_caller_identity" "current" {}
+
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+}
+
+################################################################################
 # EKS Cluster
 ################################################################################
 resource "aws_eks_cluster" "main" {
   name     = var.eks_cluster_name
-  role_arn = var.eks_cluster_iam_role_arn
+  role_arn = "arn:aws:iam::${local.account_id}:role/${var.eks_cluster_role_name}"
   version  = var.eks_cluster_version
 
   vpc_config {
-    subnet_ids              = var.private_app3_subnet_ids
+    subnet_ids              = var.private_subnet_ids
     endpoint_private_access = true
     endpoint_public_access  = true
-    public_access_cidrs     = ["0.0.0.0/0"]
+    public_access_cidrs     = var.eks_public_access_cidrs
   }
 
   depends_on = [aws_cloudwatch_log_group.eks_main_log_group]
   enabled_cluster_log_types = var.eks_log_types
-  
+
   access_config {
     authentication_mode = "API"
   }
@@ -26,11 +35,8 @@ resource "aws_eks_cluster" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "eks_main_log_group" {
-  # The log group name format is /aws/eks/<cluster-name>/cluster
-  # Reference: https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
   name              = "/aws/eks/${var.eks_cluster_name}/cluster"
-  retention_in_days = 545
-  # ... potentially other configuration ...
+  retention_in_days = var.eks_log_retention_in_days
 }
 
 ################################################################################
@@ -54,8 +60,8 @@ resource "aws_iam_openid_connect_provider" "cluster" {
 resource "aws_eks_node_group" "ng_al2023_x86_c5large" {
   cluster_name    = aws_eks_cluster.main.name
   node_group_name = var.ng_al2023_x86_c5large_name
-  node_role_arn   = var.ng_al2023_x86_c5large_iam_role_arn
-  subnet_ids      = var.private_app3_subnet_ids
+  node_role_arn   = "arn:aws:iam::${local.account_id}:role/${var.ng_al2023_x86_c5large_role_name}"
+  subnet_ids      = var.private_subnet_ids
 
   ami_type       = var.ng_al2023_x86_c5large_ami_type
   instance_types = var.ng_al2023_x86_c5large_instance_types
@@ -69,22 +75,21 @@ resource "aws_eks_node_group" "ng_al2023_x86_c5large" {
   tags = var.common_tags
 }
 
-
 ################################################################################
 # Access Entries
 ################################################################################
 resource "aws_eks_access_entry" "karpenter_node_role" {
-  cluster_name      = aws_eks_cluster.main.name
-  principal_arn     = var.karpenter_node_role_arn
-  type              = "EC2_LINUX"
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = "arn:aws:iam::${local.account_id}:role/${var.karpenter_node_role_name}"
+  type          = "EC2_LINUX"
 
   tags = var.common_tags
 }
 
 resource "aws_eks_access_entry" "admin_role" {
-  cluster_name      = aws_eks_cluster.main.name
-  principal_arn     = var.access_entry_admin_role
-  type              = "STANDARD"
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = "arn:aws:iam::${local.account_id}:role/${var.access_entry_admin_role_name}"
+  type          = "STANDARD"
 
   tags = var.common_tags
 }
@@ -100,9 +105,9 @@ resource "aws_eks_access_policy_association" "admin_role" {
 }
 
 resource "aws_eks_access_entry" "admin_user" {
-  cluster_name      = aws_eks_cluster.main.name
-  principal_arn     = var.access_entry_admin_user
-  type              = "STANDARD"
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = "arn:aws:iam::${local.account_id}:user/${var.access_entry_admin_user_name}"
+  type          = "STANDARD"
 
   tags = var.common_tags
 }
@@ -116,4 +121,3 @@ resource "aws_eks_access_policy_association" "admin_user" {
     type = "cluster"
   }
 }
-

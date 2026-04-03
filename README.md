@@ -4,6 +4,16 @@
 - dev: 558846430793
 
 
+## Terraform 배포
+```
+shared 계정 (202949997891) - GitLab Runner 위치
+  └── GitlabTerraformRole (Runner EC2 Instance Profile)
+        │
+        ├── assume → manage 계정 ManageTerraformRole (692806374063)
+        ├── assume → dev 계정 DevTerraformRole (558846430793)
+        └── assume → shared 계정 SharedTerraformRole (202949997891)
+```
+
 ## Network
 ### manage-ue1 VPC
 `vpc-0e72171581e48f648`  
@@ -94,3 +104,6 @@ Legend:
 
 
 ![tgw_architecture](images/tgw_architecture.gif)
+
+
+
