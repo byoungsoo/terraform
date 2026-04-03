@@ -12,8 +12,8 @@ dev-ap2-eks-tf:validate:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-dev-ap2/eks-tf/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 dev-ap2-eks-tf:plan:
   extends: .terraform_base
@@ -30,8 +30,8 @@ dev-ap2-eks-tf:plan:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-dev-ap2/eks-tf/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 dev-ap2-eks-tf:apply:
   extends: .terraform_base
@@ -44,16 +44,26 @@ dev-ap2-eks-tf:apply:
   dependencies:
     - dev-ap2-eks-tf:plan
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - account/aws-dev-ap2/eks-tf/**/*
-      when: manual
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 # =============================================================================
 # dev-ap2 / tgw
 # =============================================================================
+dev-ap2-tgw:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-dev-ap2/tgw
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-dev-ap2/tgw/**/*
+    - when: manual
+      allow_failure: true
+
 dev-ap2-tgw:plan:
   extends: .terraform_base
   stage: plan
@@ -69,8 +79,8 @@ dev-ap2-tgw:plan:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-dev-ap2/tgw/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 dev-ap2-tgw:apply:
   extends: .terraform_base
@@ -83,9 +93,5 @@ dev-ap2-tgw:apply:
   dependencies:
     - dev-ap2-tgw:plan
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - account/aws-dev-ap2/tgw/**/*
-      when: manual
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true

@@ -1,6 +1,20 @@
 # =============================================================================
 # manage-ue1 / tgw
 # =============================================================================
+manage-ue1-tgw:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-manage-ue1/tgw
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-manage-ue1/tgw/**/*
+    - when: manual
+      allow_failure: true
+
 manage-ue1-tgw:plan:
   extends: .terraform_base
   stage: plan
@@ -16,8 +30,8 @@ manage-ue1-tgw:plan:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-manage-ue1/tgw/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 manage-ue1-tgw:apply:
   extends: .terraform_base
@@ -30,16 +44,26 @@ manage-ue1-tgw:apply:
   dependencies:
     - manage-ue1-tgw:plan
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - account/aws-manage-ue1/tgw/**/*
-      when: manual
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 # =============================================================================
 # manage-ue1 / vpc
 # =============================================================================
+manage-ue1-vpc:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-manage-ue1/vpc
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-manage-ue1/vpc/**/*
+    - when: manual
+      allow_failure: true
+
 manage-ue1-vpc:plan:
   extends: .terraform_base
   stage: plan
@@ -55,8 +79,8 @@ manage-ue1-vpc:plan:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-manage-ue1/vpc/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 manage-ue1-vpc:apply:
   extends: .terraform_base
@@ -69,9 +93,5 @@ manage-ue1-vpc:apply:
   dependencies:
     - manage-ue1-vpc:plan
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - account/aws-manage-ue1/vpc/**/*
-      when: manual
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true

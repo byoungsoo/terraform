@@ -1,6 +1,20 @@
 # =============================================================================
 # manage-ap3 / tgw
 # =============================================================================
+manage-ap3-tgw:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-manage-ap3/tgw
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-manage-ap3/tgw/**/*
+    - when: manual
+      allow_failure: true
+
 manage-ap3-tgw:plan:
   extends: .terraform_base
   stage: plan
@@ -16,8 +30,8 @@ manage-ap3-tgw:plan:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-manage-ap3/tgw/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 manage-ap3-tgw:apply:
   extends: .terraform_base
@@ -30,16 +44,26 @@ manage-ap3-tgw:apply:
   dependencies:
     - manage-ap3-tgw:plan
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - account/aws-manage-ap3/tgw/**/*
-      when: manual
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 # =============================================================================
 # manage-ap3 / vpc
 # =============================================================================
+manage-ap3-vpc:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-manage-ap3/vpc
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-manage-ap3/vpc/**/*
+    - when: manual
+      allow_failure: true
+
 manage-ap3-vpc:plan:
   extends: .terraform_base
   stage: plan
@@ -55,8 +79,8 @@ manage-ap3-vpc:plan:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-manage-ap3/vpc/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 manage-ap3-vpc:apply:
   extends: .terraform_base
@@ -69,9 +93,5 @@ manage-ap3-vpc:apply:
   dependencies:
     - manage-ap3-vpc:plan
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - account/aws-manage-ap3/vpc/**/*
-      when: manual
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true

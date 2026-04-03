@@ -1,6 +1,20 @@
 # =============================================================================
 # dev-ue1 / eks-main
 # =============================================================================
+dev-ue1-eks-main:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-dev-ue1/eks-main
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-dev-ue1/eks-main/**/*
+    - when: manual
+      allow_failure: true
+
 dev-ue1-eks-main:plan:
   extends: .terraform_base
   stage: plan
@@ -16,8 +30,8 @@ dev-ue1-eks-main:plan:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-dev-ue1/eks-main/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 dev-ue1-eks-main:apply:
   extends: .terraform_base
@@ -30,9 +44,5 @@ dev-ue1-eks-main:apply:
   dependencies:
     - dev-ue1-eks-main:plan
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - account/aws-dev-ue1/eks-main/**/*
-      when: manual
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true

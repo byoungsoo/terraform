@@ -1,6 +1,20 @@
 # =============================================================================
 # dev-ap3 / vpc
 # =============================================================================
+dev-ap3-vpc:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-dev-ap3/vpc
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-dev-ap3/vpc/**/*
+    - when: manual
+      allow_failure: true
+
 dev-ap3-vpc:plan:
   extends: .terraform_base
   stage: plan
@@ -16,8 +30,8 @@ dev-ap3-vpc:plan:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - account/aws-dev-ap3/vpc/**/*
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
 
 dev-ap3-vpc:apply:
   extends: .terraform_base
@@ -30,9 +44,5 @@ dev-ap3-vpc:apply:
   dependencies:
     - dev-ap3-vpc:plan
   rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
-      changes:
-        - account/aws-dev-ap3/vpc/**/*
-      when: manual
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: manual
+    - when: manual
+      allow_failure: true
