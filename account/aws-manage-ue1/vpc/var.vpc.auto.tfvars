@@ -74,5 +74,5 @@ create_igw = true
 igw_name = "main"
 enable_nat_gateway = true
 single_nat_gateway = true
-one_nat_gateway_per_az = true
+one_nat_gateway_per_az = false
 nat_gateway_destination_cidr_block = "0.0.0.0/0"
