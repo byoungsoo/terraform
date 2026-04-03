@@ -46,10 +46,10 @@ eks_addons = {
     addon_version = "v1.13.2-eksbuild.1"
   }
   "eks-pod-identity-agent" = {
-    addon_version = "v1.3.4-eksbuild.1"
+    addon_version = "v1.3.10-eksbuild.3"
   }
   "aws-ebs-csi-driver" = {
-    addon_version                = "v1.45.0-eksbuild.1"
+    addon_version                = "v1.57.1-eksbuild.1"
     pod_identity_role_name       = "AmazonEKS_EBS_CSI_DriverRole_PodIdentity"
     pod_identity_service_account = "ebs-csi-controller-sa"
   }
