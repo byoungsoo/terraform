@@ -25,6 +25,8 @@ variables:
   image:
     name: hashicorp/terraform:${TF_VERSION}
     entrypoint: [""]
+  tags:
+    - terraform
   before_script:
     - cd ${TF_ROOT}
     - terraform init -input=false
