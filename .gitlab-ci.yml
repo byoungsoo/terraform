@@ -13,6 +13,7 @@ stages:
 
 variables:
   TF_VERSION: "1.14.5"
+  GIT_SUBMODULE_STRATEGY: recursive
 
 # GitLab CI Variables (Settings > CI/CD > Variables)에 등록 필요:
 #

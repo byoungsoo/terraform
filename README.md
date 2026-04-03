@@ -16,6 +16,12 @@ shared 계정 (202949997891) - GitLab Runner 위치
         ├── assume → manage 계정 ManageTerraformRole (692806374063)
         ├── assume → dev 계정 DevTerraformRole (558846430793)
         └── assume → shared 계정 SharedTerraformRole (202949997891)
+
+Mac Local 계정 (558846430793) - IAM User(Byoungsoo)
+        │
+        ├── assume → manage 계정 ManageTerraformRole (692806374063)
+        ├── assume → dev 계정 DevTerraformRole (558846430793)
+        └── assume → shared 계정 SharedTerraformRole (202949997891)
 ```
 
 ## Network
