@@ -1,3 +1,0 @@
-[submodule "module/module-vpc"]
-	path = module/module-vpc
-	url = ../module-vpc.git
