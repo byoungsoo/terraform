@@ -1,48 +1,97 @@
 # =============================================================================
-# dev-ue1 / eks-main (disabled - directory not yet created)
+# dev-ue1 / vpc
 # =============================================================================
-# dev-ue1-eks-main:validate:
-#   extends: .terraform_base
-#   stage: validate
-#   variables:
-#     TF_ROOT: account/aws-dev-ue1/eks-main
-#   script:
-#     - terraform validate
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "push"
-#       changes:
-#         - account/aws-dev-ue1/eks-main/**/*
-#     - when: manual
-#       allow_failure: true
-#
-# dev-ue1-eks-main:plan:
-#   extends: .terraform_base
-#   stage: plan
-#   variables:
-#     TF_ROOT: account/aws-dev-ue1/eks-main
-#   script:
-#     - terraform plan -out=tfplan
-#   artifacts:
-#     paths:
-#       - ${TF_ROOT}/tfplan
-#     expire_in: 1 hour
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "push"
-#       changes:
-#         - account/aws-dev-ue1/eks-main/**/*
-#     - when: manual
-#       allow_failure: true
-#
-# dev-ue1-eks-main:apply:
-#   extends: .terraform_base
-#   stage: apply
-#   resource_group: dev-ue1-eks-main
-#   variables:
-#     TF_ROOT: account/aws-dev-ue1/eks-main
-#   script:
-#     - terraform apply -auto-approve tfplan
-#   dependencies:
-#     - dev-ue1-eks-main:plan
-#   rules:
-#     - when: manual
-#       allow_failure: true
+dev-ue1-vpc:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-dev-ue1/vpc
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-dev-ue1/vpc/**/*
+    - when: manual
+      allow_failure: true
+
+dev-ue1-vpc:plan:
+  extends: .terraform_base
+  stage: plan
+  variables:
+    TF_ROOT: account/aws-dev-ue1/vpc
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan
+    expire_in: 1 hour
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-dev-ue1/vpc/**/*
+    - when: manual
+      allow_failure: true
+
+dev-ue1-vpc:apply:
+  extends: .terraform_base
+  stage: apply
+  resource_group: dev-ue1-vpc
+  variables:
+    TF_ROOT: account/aws-dev-ue1/vpc
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - dev-ue1-vpc:plan
+  rules:
+    - when: manual
+      allow_failure: true
+
+# =============================================================================
+# dev-ue1 / vpc-endpoint
+# =============================================================================
+dev-ue1-vpc-endpoint:validate:
+  extends: .terraform_base
+  stage: validate
+  variables:
+    TF_ROOT: account/aws-dev-ue1/vpc-endpoint
+  script:
+    - terraform validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-dev-ue1/vpc-endpoint/**/*
+    - when: manual
+      allow_failure: true
+
+dev-ue1-vpc-endpoint:plan:
+  extends: .terraform_base
+  stage: plan
+  variables:
+    TF_ROOT: account/aws-dev-ue1/vpc-endpoint
+  script:
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan
+    expire_in: 1 hour
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+      changes:
+        - account/aws-dev-ue1/vpc-endpoint/**/*
+    - when: manual
+      allow_failure: true
+
+dev-ue1-vpc-endpoint:apply:
+  extends: .terraform_base
+  stage: apply
+  resource_group: dev-ue1-vpc-endpoint
+  variables:
+    TF_ROOT: account/aws-dev-ue1/vpc-endpoint
+  script:
+    - terraform apply -auto-approve tfplan
+  dependencies:
+    - dev-ue1-vpc-endpoint:plan
+  rules:
+    - when: manual
+      allow_failure: true
