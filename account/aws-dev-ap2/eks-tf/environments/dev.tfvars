@@ -34,6 +34,25 @@ karpenter_node_role_name     = "KarpenterNodeRole"
 access_entry_admin_role_name = "AdminDevAccountRole"
 access_entry_admin_user_name = "byoungsoo"
 
+
+
+# ----------------------------------------------------------------------------------------
+# addon_name                       serviceAccount          recommendedManagedPolicies #  | 
+# ----------------------------------------------------------------------------------------
+# vpc-cni                          aws-node                AmazonEKS_CNI_Policy
+# coredns                          -                       -
+# kube-proxy                       -                       -
+# eks-pod-identity-agent           -                       -
+# aws-ebs-csi-driver               ebs-csi-controller-sa   AmazonEBSCSIDriverPolicy
+# aws-efs-csi-driver               efs-csi-controller-sa   AmazonEFSCSIDriverPolicy
+# aws-mountpoint-s3-csi-driver     s3-csi-driver-sa        AmazonS3FullAccess
+# snapshot-controller              -                       -
+# aws-guardduty-agent              -                       -
+# amazon-cloudwatch-observability  cloudwatch-agent        CloudWatchAgentServerPolicy
+# adot                             adot-col-prom-metrics   AmazonPrometheusRemoteWriteAccess, CloudWatchAgentServerPolicy
+#                                  adot-col-otlp-ingest    AWSXrayWriteOnlyAccess
+#                                  adot-col-container-logs CloudWatchAgentServerPolicy
+# ----------------------------------------------------------------------------------------
 # EKS Addons
 eks_addons = {
   "vpc-cni" = {
@@ -43,7 +62,46 @@ eks_addons = {
     addon_version = "v1.35.0-eksbuild.2"
   }
   "coredns" = {
-    addon_version = "v1.13.2-eksbuild.1"
+    addon_version        = "v1.13.2-eksbuild.1"
+    configuration_values = <<-EOT
+      {
+        "autoScaling": {
+          "enabled": true,
+          "minReplicas": 3,
+          "maxReplicas": 10
+        },
+        "resources": {
+          "requests": { "cpu": "100m", "memory": "128Mi" },
+          "limits": { "cpu": "500m", "memory": "256Mi" }
+        },
+        "affinity": {
+          "nodeAffinity": {
+            "requiredDuringSchedulingIgnoredDuringExecution": {
+              "nodeSelectorTerms": [{
+                "matchExpressions": [
+                  { "key": "kubernetes.io/os", "operator": "In", "values": ["linux"] },
+                  { "key": "kubernetes.io/arch", "operator": "In", "values": ["amd64", "arm64"] }
+                ]
+              }]
+            }
+          }
+        },
+        "topologySpreadConstraints": [
+          {
+            "maxSkew": 1,
+            "topologyKey": "kubernetes.io/hostname",
+            "whenUnsatisfiable": "ScheduleAnyway",
+            "labelSelector": { "matchLabels": { "k8s-app": "kube-dns" } }
+          },
+          {
+            "maxSkew": 1,
+            "topologyKey": "topology.kubernetes.io/zone",
+            "whenUnsatisfiable": "ScheduleAnyway",
+            "labelSelector": { "matchLabels": { "k8s-app": "kube-dns" } }
+          }
+        ]
+      }
+    EOT
   }
   "eks-pod-identity-agent" = {
     addon_version = "v1.3.10-eksbuild.3"
@@ -52,5 +110,10 @@ eks_addons = {
     addon_version                = "v1.57.1-eksbuild.1"
     pod_identity_role_name       = "AmazonEKS_EBS_CSI_DriverRole_PodIdentity"
     pod_identity_service_account = "ebs-csi-controller-sa"
+  }
+  "amazon-cloudwatch-observability" = {
+    addon_version                = "v5.3.0-eksbuild.1"
+    pod_identity_role_name       = "AmazonCloudWatchObservabilityRole"
+    pod_identity_service_account = "cloudwatch-agent"
   }
 }
