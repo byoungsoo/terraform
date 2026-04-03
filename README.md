@@ -6,9 +6,6 @@
 
 ## Terraform 배포
 
-### Resource Naming Rule
-#${var.project_code}-${var.account}-${var.aws_region_code}-resource-{az}-{name}
-
 ```
 shared 계정 (202949997891) - GitLab Runner 위치
   └── GitlabTerraformRole (Runner EC2 Instance Profile)
@@ -23,6 +20,9 @@ Mac Local 계정 (558846430793) - IAM User(Byoungsoo)
         ├── assume → dev 계정 DevTerraformRole (558846430793)
         └── assume → shared 계정 SharedTerraformRole (202949997891)
 ```
+
+## Resource Naming Rule
+#${var.project_code}-${var.account}-${var.aws_region_code}-resource-{az}-{name}
 
 ## Network
 ### manage-ue1 VPC
