@@ -60,7 +60,6 @@ output "eks_addons" {
   value = {
     for k, v in aws_eks_addon.this : k => {
       arn     = v.arn
-      status  = v.status
       version = v.addon_version
     }
   }
