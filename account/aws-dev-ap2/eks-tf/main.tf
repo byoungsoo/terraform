@@ -67,9 +67,9 @@ resource "aws_eks_node_group" "ng_al2023_x86_c5large" {
   instance_types = var.ng_al2023_x86_c5large_instance_types
 
   scaling_config {
-    desired_size = 1
-    max_size     = 1
-    min_size     = 1
+    desired_size = var.ng_al2023_x86_c5large_desired_size
+    max_size     = var.ng_al2023_x86_c5large_max_size
+    min_size     = var.ng_al2023_x86_c5large_min_size
   }
 
   tags = var.common_tags

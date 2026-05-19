@@ -28,6 +28,9 @@ ng_al2023_x86_c5large_name           = "ng-al2023-x86-c5large"
 ng_al2023_x86_c5large_role_name      = "AmazonEKSWorkerNodeRole"
 ng_al2023_x86_c5large_instance_types = ["c5.xlarge"]
 ng_al2023_x86_c5large_ami_type       = "AL2023_x86_64_STANDARD"
+ng_al2023_x86_c5large_desired_size   = 0
+ng_al2023_x86_c5large_min_size       = 0
+ng_al2023_x86_c5large_max_size       = 1
 
 # Access Entries
 karpenter_node_role_name     = "KarpenterNodeRole"

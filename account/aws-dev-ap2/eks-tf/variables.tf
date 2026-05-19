@@ -108,6 +108,24 @@ variable "ng_al2023_x86_c5large_ami_type" {
   default     = "AL2023_x86_64_STANDARD"
 }
 
+variable "ng_al2023_x86_c5large_desired_size" {
+  type        = number
+  description = "Desired number of nodes"
+  default     = 1
+}
+
+variable "ng_al2023_x86_c5large_max_size" {
+  type        = number
+  description = "Maximum number of nodes"
+  default     = 1
+}
+
+variable "ng_al2023_x86_c5large_min_size" {
+  type        = number
+  description = "Minimum number of nodes"
+  default     = 1
+}
+
 ################################################################################
 # Access Entries
 ################################################################################

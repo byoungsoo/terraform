@@ -1,10 +1,10 @@
 # Terraform CI/CD Pipeline
 #
-# GitLab Runner(shared 계정)의 EC2 Instance Profile(GitlabTerraformRole)이
-# 각 계정의 Terraform Role을 assume하여 배포합니다.
+# GitLab Runner의 Runner Pod Identity Role (GitlabTerraformRole)이
+# 각 계정의 Terraform 계정 별 역할을 assume하여 배포합니다.
 #
-# shared (202949997891) - GitLab Runner
-#   └── GitlabTerraformRole (EC2 Instance Profile)
+# GitLab Runner (202949997891)
+#   └── GitlabTerraformRole (Runner Pod Identity Role)
 #         ├── assume → ManageTerraformRole (692806374063)
 #         ├── assume → DevTerraformRole (558846430793)
 #         └── assume → SharedTerraformRole (202949997891)
