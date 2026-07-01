@@ -121,7 +121,7 @@ eks_addons = {
     pod_identity_service_account = "ebs-csi-controller-sa"
   }
   "amazon-cloudwatch-observability" = {
-    addon_version                = "v6.2.0-eksbuild.1"
+    addon_version                = "v6.3.0-eksbuild.1"
     pod_identity_role_name       = "AmazonCloudWatchObservabilityRole"
     pod_identity_service_account = "cloudwatch-agent"
   }
