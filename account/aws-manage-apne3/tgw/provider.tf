@@ -2,7 +2,7 @@ terraform {
 
   backend "s3" {
     bucket  = "bys-shared-apne2-s3-terraform"
-    key     = "aws-manage-apne3/tgw/terraform.tfstate"
+    key     = "aws-manage-apne3/common/tgw/terraform.tfstate"
     region  = "ap-northeast-2"
     encrypt = true
   }
