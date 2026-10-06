@@ -1,25 +1,25 @@
 # =============================================================================
-# dev-ap2 / eks-tf
+# dev-ap2 / eks-main
 # =============================================================================
-dev-ap2-eks-tf:validate:
+dev-ap2-eks-main:validate:
   extends: .terraform_base
   stage: validate
   variables:
-    TF_ROOT: account/aws-dev-ap2/eks-tf
+    TF_ROOT: account/aws-dev-ap2/eks-main
   script:
     - terraform validate
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
-        - account/aws-dev-ap2/eks-tf/**/*
+        - account/aws-dev-ap2/eks-main/**/*
     - when: manual
       allow_failure: true
 
-dev-ap2-eks-tf:plan:
+dev-ap2-eks-main:plan:
   extends: .terraform_base
   stage: plan
   variables:
-    TF_ROOT: account/aws-dev-ap2/eks-tf
+    TF_ROOT: account/aws-dev-ap2/eks-main
   script:
     - terraform plan -var-file=environments/dev.tfvars -out=tfplan
   artifacts:
@@ -29,20 +29,20 @@ dev-ap2-eks-tf:plan:
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
       changes:
-        - account/aws-dev-ap2/eks-tf/**/*
+        - account/aws-dev-ap2/eks-main/**/*
     - when: manual
       allow_failure: true
 
-dev-ap2-eks-tf:apply:
+dev-ap2-eks-main:apply:
   extends: .terraform_base
   stage: apply
-  resource_group: dev-ap2-eks-tf
+  resource_group: dev-ap2-eks-main
   variables:
-    TF_ROOT: account/aws-dev-ap2/eks-tf
+    TF_ROOT: account/aws-dev-ap2/eks-main
   script:
     - terraform apply -auto-approve tfplan
   dependencies:
-    - dev-ap2-eks-tf:plan
+    - dev-ap2-eks-main:plan
   rules:
     - when: manual
       allow_failure: true

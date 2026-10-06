@@ -16,21 +16,21 @@ vpc_id             = "vpc-0ca96cd5c37d3bae8"
 private_subnet_ids = ["subnet-0bbd4c134a3589aee", "subnet-0905f706c84047310", "subnet-0299d5e7a4d5b7615", "subnet-011d63d192c05c6a3"]
 
 # EKS Cluster Configuration
-eks_cluster_name          = "bys-dev-apne2-eks-tf"
-eks_cluster_version       = "1.35"
+eks_cluster_name          = "bys-dev-apne2-eks-main"
+eks_cluster_version       = "1.36"
 eks_cluster_role_name     = "EKSClusterRole"
 eks_public_access_cidrs   = ["0.0.0.0/0"]
 eks_log_types             = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 eks_log_retention_in_days = 545
 
 # EKS Node Group Configuration
-ng_al2023_x86_c5large_name           = "ng-al2023-x86-c5large"
+ng_al2023_x86_c5large_name           = "ng-al2023-x86-c52large-v1"
 ng_al2023_x86_c5large_role_name      = "AmazonEKSWorkerNodeRole"
-ng_al2023_x86_c5large_instance_types = ["c5.xlarge"]
+ng_al2023_x86_c5large_instance_types = ["c5.2xlarge"]
 ng_al2023_x86_c5large_ami_type       = "AL2023_x86_64_STANDARD"
-ng_al2023_x86_c5large_desired_size   = 0
-ng_al2023_x86_c5large_min_size       = 0
-ng_al2023_x86_c5large_max_size       = 1
+ng_al2023_x86_c5large_desired_size   = 2
+ng_al2023_x86_c5large_min_size       = 2
+ng_al2023_x86_c5large_max_size       = 2
 
 # Access Entries
 karpenter_node_role_name     = "KarpenterNodeRole"
@@ -65,13 +65,13 @@ done
 # EKS Addons
 eks_addons = {
   "vpc-cni" = {
-    addon_version = "v1.22.2-eksbuild.1"
+    addon_version = "v1.23.2-eksbuild.1"
   }
   "kube-proxy" = {
-    addon_version = "v1.35.3-eksbuild.13"
+    addon_version = "v1.36.1-eksbuild.5"
   }
   "coredns" = {
-    addon_version        = "v1.14.3-eksbuild.3"
+    addon_version        = "v1.11.4-eksbuild.12"
     configuration_values = <<-EOT
       {
         "autoScaling": {
@@ -113,15 +113,15 @@ eks_addons = {
     EOT
   }
   "eks-pod-identity-agent" = {
-    addon_version = "v1.3.10-eksbuild.3"
+    addon_version = "v1.3.11-eksbuild.2"
   }
   "aws-ebs-csi-driver" = {
-    addon_version                = "v1.62.0-eksbuild.1"
+    addon_version                = "v1.63.0-eksbuild.1"
     pod_identity_role_name       = "AmazonEKS_EBS_CSI_DriverRole_PodIdentity"
     pod_identity_service_account = "ebs-csi-controller-sa"
   }
   "amazon-cloudwatch-observability" = {
-    addon_version                = "v6.3.0-eksbuild.1"
+    addon_version                = "v6.4.0-eksbuild.1"
     pod_identity_role_name       = "AmazonCloudWatchObservabilityRole"
     pod_identity_service_account = "cloudwatch-agent"
   }
