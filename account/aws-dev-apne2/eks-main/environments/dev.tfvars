@@ -68,10 +68,10 @@ eks_addons = {
     addon_version = "v1.23.2-eksbuild.1"
   }
   "kube-proxy" = {
-    addon_version = "v1.36.1-eksbuild.5"
+    addon_version = "v1.36.0-eksbuild.45"
   }
   "coredns" = {
-    addon_version        = "v1.11.4-eksbuild.12"
+    addon_version        = "v1.14.7-eksbuild.10"
     configuration_values = <<-EOT
       {
         "autoScaling": {
@@ -113,7 +113,7 @@ eks_addons = {
     EOT
   }
   "eks-pod-identity-agent" = {
-    addon_version = "v1.3.11-eksbuild.2"
+    addon_version = "v1.4.0-eksbuild.3"
   }
   "aws-ebs-csi-driver" = {
     addon_version                = "v1.63.0-eksbuild.1"
