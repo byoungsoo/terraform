@@ -33,6 +33,8 @@ variable "aws_api_readers" {
     service_account = string
     role_name       = string
     actions         = list(string)
+    # Cross-account roles this client may assume (e.g. payer-account Cost Explorer read role)
+    assume_role_arns = optional(list(string), [])
   }))
   description = "In-cluster clients that read AWS APIs (no resource scoping possible for these read APIs). Creates an IAM role with the given actions and a Pod Identity association."
   default     = {}

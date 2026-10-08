@@ -63,6 +63,9 @@ aws_api_readers = {
     ]
   }
   # Cost Explorer exporter (AWS - Cost dashboard). Each CE API request is billed ($0.01).
+  # Organization-wide costs come from the payer account: the exporter assumes CostExplorerReadRole
+  # there (terraform aws-manage-apne2/cost-explorer-access). The local ce:* actions are a fallback
+  # for dev-only costs when ASSUME_ROLE_ARN is unset.
   "aws-cost-exporter" = {
     namespace       = "monitoring"
     service_account = "aws-cost-exporter"
@@ -71,5 +74,6 @@ aws_api_readers = {
       "ce:GetCostAndUsage",
       "ce:GetCostForecast",
     ]
+    assume_role_arns = ["arn:aws:iam::692806374063:role/CostExplorerReadRole"]
   }
 }

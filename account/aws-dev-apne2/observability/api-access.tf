@@ -22,6 +22,17 @@ data "aws_iam_policy_document" "api_reader" {
     actions   = each.value.actions
     resources = ["*"]
   }
+
+  dynamic "statement" {
+    for_each = length(each.value.assume_role_arns) > 0 ? [1] : []
+
+    content {
+      sid       = "AssumeCrossAccountRoles"
+      effect    = "Allow"
+      actions   = ["sts:AssumeRole", "sts:TagSession"]
+      resources = each.value.assume_role_arns
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "api_reader" {
