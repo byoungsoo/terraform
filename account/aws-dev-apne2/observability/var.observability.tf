@@ -26,3 +26,14 @@ variable "observability_stores" {
     retention; leave it null when config objects (ruler, alertmanager) share the bucket without a prefix.
   EOT
 }
+
+variable "aws_api_readers" {
+  type = map(object({
+    namespace       = string
+    service_account = string
+    role_name       = string
+    actions         = list(string)
+  }))
+  description = "In-cluster clients that read AWS APIs (no resource scoping possible for these read APIs). Creates an IAM role with the given actions and a Pod Identity association."
+  default     = {}
+}

@@ -33,3 +33,43 @@ observability_stores = {
     expiration_prefix = "blocks/"
   }
 }
+
+aws_api_readers = {
+  # Grafana CloudWatch datasource (Bedrock dashboard and other AWS service metrics)
+  # https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/#iam-policies
+  "grafana-cloudwatch" = {
+    namespace       = "grafana"
+    service_account = "grafana"
+    role_name       = "EKSGrafanaDataSourceRole_Main"
+    actions = [
+      "cloudwatch:DescribeAlarmsForMetric",
+      "cloudwatch:DescribeAlarmHistory",
+      "cloudwatch:DescribeAlarms",
+      "cloudwatch:ListMetrics",
+      "cloudwatch:GetMetricData",
+      "cloudwatch:GetInsightRuleReport",
+      "logs:DescribeLogGroups",
+      "logs:GetLogGroupFields",
+      "logs:StartQuery",
+      "logs:StopQuery",
+      "logs:GetQueryResults",
+      "logs:GetLogEvents",
+      "ec2:DescribeTags",
+      "ec2:DescribeInstances",
+      "ec2:DescribeRegions",
+      "tag:GetResources",
+      "oam:ListSinks",
+      "oam:ListAttachedLinks",
+    ]
+  }
+  # Cost Explorer exporter (AWS - Cost dashboard). Each CE API request is billed ($0.01).
+  "aws-cost-exporter" = {
+    namespace       = "monitoring"
+    service_account = "aws-cost-exporter"
+    role_name       = "EKSCostExporterRole_Main"
+    actions = [
+      "ce:GetCostAndUsage",
+      "ce:GetCostForecast",
+    ]
+  }
+}

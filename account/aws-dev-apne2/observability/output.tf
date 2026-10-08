@@ -12,3 +12,8 @@ output "pod_identity_association_ids" {
   description = "Pod Identity association ID per backend"
   value       = { for k, a in aws_eks_pod_identity_association.this : k => a.association_id }
 }
+
+output "api_reader_role_arns" {
+  description = "IAM role ARN per AWS API reader"
+  value       = { for k, r in aws_iam_role.api_reader : k => r.arn }
+}
