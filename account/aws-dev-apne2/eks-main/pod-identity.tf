@@ -11,11 +11,3 @@ resource "aws_eks_pod_identity_association" "this" {
 
   tags = var.common_tags
 }
-
-# Created out of band with the AWS CLI before being codified; remove after the first apply.
-import {
-  for_each = { for k, v in var.pod_identity_associations : k => v if v.import_id != null }
-
-  to = aws_eks_pod_identity_association.this[each.key]
-  id = "${var.eks_cluster_name},${each.value.import_id}"
-}

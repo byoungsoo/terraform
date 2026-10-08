@@ -129,12 +129,10 @@ pod_identity_associations = {
     namespace       = "karpenter"
     service_account = "karpenter"
     role_name       = "KarpenterControllerRole"
-    import_id       = "a-ckaii3gc87ruswnj5"
   }
   "aws-load-balancer-controller" = {
     namespace       = "kube-system"
     service_account = "aws-load-balancer-controller"
     role_name       = "AmazonEKSLoadBalancerControllerRole"
-    import_id       = "a-f7s0vu0xsh6utqe9t"
   }
 }

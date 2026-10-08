@@ -168,8 +168,7 @@ variable "pod_identity_associations" {
     namespace       = string
     service_account = string
     role_name       = string
-    import_id       = optional(string)
   }))
-  description = "Pod Identity associations for in-cluster controllers. import_id adopts an existing association (a-xxxx)."
+  description = "Pod Identity associations for in-cluster controllers."
   default     = {}
 }
