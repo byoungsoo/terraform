@@ -120,9 +120,21 @@ eks_addons = {
     pod_identity_role_name       = "AmazonEKS_EBS_CSI_DriverRole_PodIdentity"
     pod_identity_service_account = "ebs-csi-controller-sa"
   }
-  "amazon-cloudwatch-observability" = {
-    addon_version                = "v6.4.0-eksbuild.1"
-    pod_identity_role_name       = "AmazonCloudWatchObservabilityRole"
-    pod_identity_service_account = "cloudwatch-agent"
+  # amazon-cloudwatch-observability removed: replaced by the LGTM stack + OpenTelemetry Operator (ArgoCD)
+}
+
+# Pod Identity Associations
+pod_identity_associations = {
+  "karpenter" = {
+    namespace       = "karpenter"
+    service_account = "karpenter"
+    role_name       = "KarpenterControllerRole"
+    import_id       = "a-ckaii3gc87ruswnj5"
+  }
+  "aws-load-balancer-controller" = {
+    namespace       = "kube-system"
+    service_account = "aws-load-balancer-controller"
+    role_name       = "AmazonEKSLoadBalancerControllerRole"
+    import_id       = "a-f7s0vu0xsh6utqe9t"
   }
 }
